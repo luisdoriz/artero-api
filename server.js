@@ -8,6 +8,7 @@ const port = process.env.PORT || 5000;
 
 const users = require("./routes/api/users");
 const patients = require("./routes/api/patients");
+const profile = require("./routes/api/profile");
 
 //Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -43,5 +44,6 @@ require("./config/passport")(passport);
 
 app.use("/api/users", users);
 app.use("/api/patients", patients);
+app.use("/api/profile", profile);
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
