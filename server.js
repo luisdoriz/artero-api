@@ -7,6 +7,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 const users = require("./routes/api/users");
+const patients = require("./routes/api/patients");
 
 //Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -41,6 +42,7 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 
 app.use("/api/users", users);
+app.use("/api/patients", patients);
 
 //Server static assets if in production
 if (process.env.NODE_ENV === 'production') {

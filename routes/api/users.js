@@ -64,13 +64,6 @@ router.get('/test', (req, res) => res.json({ msg: 'Users Works' }));
 // @desc Register
 // @acces Public
 router.post('/register', (req, res) => {
-  const { errors, isValid } = validateRegisterInput(req.body);
-
-  //Check Valdation
-  if (!isValid) {
-    return res.status(400).json(errors);
-  }
-
   User.findOne({ email: req.body.email }).then(user => {
     if (user) {
       return res.status(400).json({ email: 'Email already exists' });
@@ -100,13 +93,6 @@ router.post('/register', (req, res) => {
 // @access Public
 
 router.post('/login', (req, res) => {
-  const { errors, isValid } = validateLoginInput(req.body);
-
-  //Check Valdation
-  if (!isValid) {
-    return res.status(400).json(errors);
-  }
-
   const email = req.body.email;
   const password = req.body.password;
 
