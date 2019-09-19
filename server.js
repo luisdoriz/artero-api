@@ -44,13 +44,4 @@ require("./config/passport")(passport);
 app.use("/api/users", users);
 app.use("/api/patients", patients);
 
-//Server static assets if in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('frontEnd/build'));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'frontEnd', 'build', 'index.html'));
-  });
-}
-
 app.listen(port, () => console.log(`Server running on port ${port}`));
