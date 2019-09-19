@@ -2,12 +2,14 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 
+const User = require('../../models/User');
+const Profile = require('../../models/Profile');
+
 router.post(
   "/addPatient",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     const email = req.body.email.toLowerCase();
-
     if (req.user.email === email) {
       return res.status(200).json({
         response: {
@@ -17,18 +19,18 @@ router.post(
       });
     }
     // Find user by email
-    User.findOne({ email }).then(user => {
+    User.findOne({ email: email }).then(user => {
       //Check for user
       if (!user) {
         return res.status(200).json({
           response: {
-            message: "An email have been delivered to" + email,
+            message: "An email have been delivered to " + email,
             status: "new"
           }
         });
       }
       Profile.findOne({ user: req.user.id })
-        .populate("user", ["email"])
+        .populate("patients", ["email"])
         .then(profile => {
           if (
             profile.patients.filter(
@@ -51,7 +53,7 @@ router.post(
               }
             });
           });
-        });
+        }).catch(err => res.status(404).json({ error: "There is no profile for this user"}));
     });
   }
 );

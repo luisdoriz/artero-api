@@ -26,7 +26,7 @@ router.get(
   "/",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    Profile.findOne({ user: req.user.id }).then(profile => {
+    Profile.findOne({ user: req.user.id }).populate("user", ["email"]).then(profile => {
       res.status(200).json(profile);
     }).catch(err => res.status(404).json({ error: 'There is no profile for this user.' }));
   }

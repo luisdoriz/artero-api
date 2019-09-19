@@ -11,7 +11,7 @@ const ProfileSchema = new Schema({
     type: String,
     required: true
   },
-  pattients: [
+  patients: [
     {
       user: {
         type: Schema.Types.ObjectId,
