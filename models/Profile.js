@@ -11,6 +11,19 @@ const ProfileSchema = new Schema({
     type: String,
     required: true
   },
+  birthday: {
+    type: Date,
+    required: true,
+  },
+  height: {
+    type: Number,
+  },
+  weight: {
+    type: Number,
+  },
+  sex: {
+    type: Boolean,
+  },
   patients: [
     {
       user: {
