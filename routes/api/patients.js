@@ -90,4 +90,14 @@ router.get(
   }
 );
 
+router.get(
+  "/search/:name",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    User.find({ name: { $regex: req.params.name, $options : 'i' }}).then(users => {
+      res.status(200).json(users);
+    })
+  }
+)
+
 module.exports = router;
