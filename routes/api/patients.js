@@ -30,31 +30,63 @@ router.post(
         });
       }
       Profile.findOne({ user: req.user.id })
-        .populate("patients", ["email"])
+        .populate("patients.user", ["email"])
         .then(profile => {
+          console.log(profile.patients.filter(
+            patient => patient.user.email === req.body.email
+          ).length > 0);
           if (
             profile.patients.filter(
-              patient => patient.email === req.params.email
+              patient => patient.user.email === req.body.email
             ).length > 0
           ) {
-            res.status(200).json({
+            return res.status(200).json({
               response: {
                 message: user.name + " is already your patient",
                 status: "null"
               }
             });
           }
-          profile.patients.unshift({ user: user.id });
+          const patientData = {
+            user: user.id
+          };
+          profile.patients.unshift(patientData);
           profile.save().then(profile => {
-            res.status(200).json({
-              response: {
-                message: user.name + " is your new patient",
-                status: "done"
-              }
+            Profile.findOne({ user: user.id }).then(patientProfile => {
+              const doctorData = {
+                user: req.user.id
+              };
+              patientProfile.doctors.unshift(doctorData);
+              patientProfile.save().then(() => res.status(200).json({
+                response: {
+                  message: user.name + " is your new patient",
+                  status: "done"
+                }
+              }));
             });
           });
-        }).catch(err => res.status(404).json({ error: "There is no profile for this user"}));
+        }).catch(err => res.status(404).json({ error: "There is no profile for this user" }));
     });
+  }
+);
+
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Profile.findOne({ user: req.user.id }).populate("patients.user", ["name"]).then(profile => {
+      res.status(200).json(profile.patients);
+    }).catch(err => res.status(404).json({ error: 'There is no patients for this user.' }));
+  }
+);
+
+router.get(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Profile.findOne({ user: req.params.id }).then(patient => {
+      res.status(200).json(patient);
+    }).catch(err => res.status(404).json({ error: 'There is no patients for this user.' }));
   }
 );
 
