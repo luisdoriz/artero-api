@@ -32,9 +32,6 @@ router.post(
       Profile.findOne({ user: req.user.id })
         .populate("patients.user", ["email"])
         .then(profile => {
-          console.log(profile.patients.filter(
-            patient => patient.user.email === req.body.email
-          ).length > 0);
           if (
             profile.patients.filter(
               patient => patient.user.email === req.body.email
@@ -74,8 +71,18 @@ router.get(
   "/",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    Profile.findOne({ user: req.user.id }).populate("patients.user", ["name"]).then(profile => {
+    Profile.findOne({ user: req.user.id }).populate("patients.patient", ["name"]).then(profile => {
       res.status(200).json(profile.patients);
+    }).catch(err => res.status(404).json({ error: 'There is no patients for this user.' }));
+  }
+);
+
+router.get(
+  "/patient",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Profile.findById(req.body.id).then(profile => {
+      res.status(200).json(profile);
     }).catch(err => res.status(404).json({ error: 'There is no patients for this user.' }));
   }
 );
@@ -91,11 +98,21 @@ router.get(
 );
 
 router.get(
-  "/search/:name",
+  "/search/:search",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    User.find({ name: { $regex: req.params.name, $options : 'i' }}).then(users => {
-      res.status(200).json(users);
+    Profiles.findById({ user: req.user.id }).populate('patients.patient', ['handleName, email']).then(profile => {
+      if (profile.patients.length() === 0) {
+        res.status(404).json({ error: 'There is no patients for this user.' });
+      }
+      const patients = profile.patients.filter(patient => {
+        if (
+          patient.email.includes(req.params.search)
+          ||
+          patient.handleName.toLowerCase().includes(req.params.search.toLowerCase())
+        ) return patient;
+      })
+      res.status(200).json(patients);
     })
   }
 )

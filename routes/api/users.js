@@ -6,6 +6,7 @@ const keys = require('../../config/keys');
 const passport = require('passport');
 // Load User model
 const User = require('../../models/User');
+const Profile = require('../../models/Profile');
 
 // @route GET api/users/test
 // @desc Test users route
@@ -80,8 +81,14 @@ router.post('/register', (req, res) => {
           newUser.password = hash;
           newUser
             .save()
-            .then(user => res.json(user))
-            .catch(err => console.log(err));
+            .then(user => {
+              const newProfile = new Profile({
+                user: newUser._id,
+                handleName:  req.body.name,
+              });
+              newProfile.save().then(profile => res.json({ user, profile })).catch(err => res.json({error: 'Error'}));
+            })
+            .catch(err => res.json(err));
         });
       });
     }

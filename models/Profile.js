@@ -7,13 +7,19 @@ const ProfileSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'users'
   },
-  role: {
+  handleName: {
     type: String,
-    required: true
+    required: true,
+  },
+  email: {
+    type: String,
+  },
+  doctor: {
+    type: Schema.Types.ObjectId,
+    ref: 'users'
   },
   birthday: {
     type: Date,
-    required: true,
   },
   height: {
     type: Number,
@@ -26,17 +32,9 @@ const ProfileSchema = new Schema({
   },
   patients: [
     {
-      user: {
+      patient: {
         type: Schema.Types.ObjectId,
-        ref: 'users',
-      }
-    }
-  ],
-  doctors: [
-    {
-      user: {
-        type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'profile',
       }
     }
   ],
