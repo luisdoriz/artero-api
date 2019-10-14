@@ -91,7 +91,7 @@ router.get(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    Profile.findOne({ user: req.params.id }).then(patient => {
+    Profile.findById(req.params.id).then(patient => {
       res.status(200).json(patient);
     }).catch(err => res.status(404).json({ error: 'There is no patients for this user.' }));
   }
