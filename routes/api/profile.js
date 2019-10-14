@@ -21,10 +21,9 @@ router.post(
       .save()
       .then(patientProfile => {
         Profile.findOne({ user: req.user.id }).populate('patients.patient', ['handleName']).then(doctorProfile => {
-          console.log(doctorProfile.patients)
           if (
             doctorProfile.patients.filter(
-              patient => patient.patient.handleName === req.body.handleName
+              patient => patient.handleName === req.body.handleName
             ).length > 0
           ) {
 
@@ -34,14 +33,15 @@ router.post(
                 status: "null"
               }
             }));
+          } else {
+            const patientData = {
+              patient: patientProfile.id
+            };
+            doctorProfile.patients.unshift(patientData);
+            doctorProfile.save().then(() => res.status(200).json({ patientProfile, doctorProfile })).catch(err =>
+              res.status(200).json({ message: "An error ocurred when tried to save profile" })
+            );
           }
-          const patientData = {
-            patient: patientProfile.id
-          };
-          doctorProfile.patients.unshift(patientData);
-          doctorProfile.save().then(() => res.status(200).json({ patientProfile, doctorProfile })).catch(err =>
-            res.status(200).json({ message: "An error ocurred when tried to save profile" })
-          );
         });
       })
       .catch(err =>
@@ -76,18 +76,31 @@ router.get(
   "/",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    Profile.findOne({ user: req.user.id }).populate("user", ["email"]).then(profile => {
+    Profile.findOne({ user: req.user.id }).populate("user", ["email"]).populate('patients.patient', ['handleName']).then(profile => {
       res.status(200).json(profile);
     }).catch(err => res.status(404).json({ error: 'There is no profile for this user.' }));
   }
 );
 
 router.get(
-  "/patient",
+  "/patient/:id",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    Profile.findById(req.body.id).then(profile => {
-      res.status(200).json(profile);
+    Profile.findOne({user: req.user.id}).then(doctorProfile => {
+      if (
+        doctorProfile.patients.filter(
+          patient => patient.user === req.params.id
+        ).length > 0
+      ) {
+        res.status(200).json({
+          response: {
+            message: "You don't have this patient",
+          }});
+      } else {
+        Profile.findById(req.params.id).then( patientProfile => {
+          res.status(200).json(patientProfile);
+        }).catch(err => res.status(404).json({ error: 'There is no profile for this user.' }));
+      }
     }).catch(err => res.status(404).json({ error: 'There is no profile for this user.' }));
   }
 );

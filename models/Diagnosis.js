@@ -11,7 +11,7 @@ const DiagnosisSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'users'
   },
-  wheight: {
+  weight: {
     type: String,
     required: true
   },
