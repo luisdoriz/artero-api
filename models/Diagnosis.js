@@ -11,11 +11,9 @@ const DiagnosisSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'users'
   },
-  weight: {
+  wheight: {
     type: String,
-    required: true
   },
-  
   date: {
     type: Date,
     default: Date.now

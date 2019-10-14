@@ -11,11 +11,17 @@ const AppointmentSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'users'
   },
+  systolicPressure: {
+    type: Number,
+    required: true,
+  },
   wheight: {
     type: String,
-    required: true
   },
-  
+  diastolicPressure: {
+    type: Number,
+    required: true,
+  },
   date: {
     type: Date,
     default: Date.now
