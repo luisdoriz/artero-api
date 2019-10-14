@@ -23,7 +23,7 @@ router.post(
         Profile.findOne({ user: req.user.id }).populate('patients.patient', ['handleName']).then(doctorProfile => {
           if (
             doctorProfile.patients.filter(
-              patient => patient.handleName === req.body.handleName
+              patient => patient.handleName === req.body.name
             ).length > 0
           ) {
 
