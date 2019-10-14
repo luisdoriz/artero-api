@@ -71,7 +71,7 @@ router.get(
   "/",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    Profile.findOne({ user: req.user.id }).populate("patients.patient", ["name"]).then(profile => {
+    Profile.findOne({ user: req.user.id }).populate("patients.patient", ["handleName"]).then(profile => {
       res.status(200).json(profile.patients);
     }).catch(err => res.status(404).json({ error: 'There is no patients for this user.' }));
   }
