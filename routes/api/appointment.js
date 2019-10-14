@@ -20,4 +20,14 @@ router.post(
   }
 );
 
+router.get(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Appointment.find({ patient: req.params.id }).then((appointments) => res.status(200).json(appointments)).catch(err =>
+      res.status(404).json({ message: "No appointments" })
+    );
+  }
+);
+
 module.exports = router;
