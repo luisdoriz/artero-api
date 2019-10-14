@@ -15,7 +15,7 @@ router.post(
       diastolicPressure: req.body.diastolicPressure,
     });
     newAppointment.save().then((appointment) => res.status(200).json(appointment)).catch(err =>
-      res.status(200).json({ message: "An error ocurred when tried to save appointment" })
+      res.status(404).json({ message: "An error ocurred when tried to save appointment" })
     );
   }
 );
