@@ -6,12 +6,12 @@ const riskIndex = require('../../constants/cardiovascularRisk');
 const Appointment = require("../../models/Appointment");
 const Profile = require("../../models/Profile");
 
-const calculateRisk = (patient, systolicPressure, diastolicPressure) => {
+calculateRisk = (patient, systolicPressure, diastolicPressure) => {
   const risk = getAgeRisk(patient) + getDiabetesRisk(patient.diabetes) + getSmokerRisk(patient.smoke) + getCholesterolRisk(patient.cholesterol, patient.sex) + getHdlCholesterolRisk(patient.hdlCholesterol, patient.sex) + getBloodPressure(patient.sex, systolicPressure, diastolicPressure);
   return getPercentage(risk, patient.sex);
 }
 
-const getAgeRisk = (patient) => {
+getAgeRisk = (patient) => {
   const birthDate = new Date(patient.birthday);
   const today = new Date();
   const age = today.getFullYear() - birthDate.getFullYear();
@@ -38,17 +38,17 @@ const getAgeRisk = (patient) => {
   }
 }
 
-const getDiabetesRisk = (diabetes) => {
+getDiabetesRisk = (diabetes) => {
   if (diabetes = 0) return 0;
   return 2;
 }
 
-const getSmokerRisk = (smoke) => {
+getSmokerRisk = (smoke) => {
   if (smoke) return 2;
   return 0;
 }
 
-const getCholesterolRisk = (cholesterol, sex) => {
+getCholesterolRisk = (cholesterol, sex) => {
   if (sex && cholesterol<160) return -3;
   if (!sex && cholesterol<160) return -2;
   if (cholesterol>160 && cholesterol<199) return 0;
@@ -60,7 +60,7 @@ const getCholesterolRisk = (cholesterol, sex) => {
   if (cholesterol>280) return 3;
 }
 
-const getHdlCholesterolRisk = (cholesterol, sex) => {
+getHdlCholesterolRisk = (cholesterol, sex) => {
   if (cholesterol<35) {
     if(sex) return 2;
     return 5;
@@ -80,28 +80,52 @@ const getHdlCholesterolRisk = (cholesterol, sex) => {
   };
 }
 
-const getBloodPressure = (sex, systolicPressure, diastolicPressure) => {
+getBloodPressure = (sex, systolicPressure, diastolicPressure) => {
   if (sex) return getMaleBloodPressure(systolicPressure, diastolicPressure);
   return getFemaleBloodPressure(systolicPressure, diastolicPressure);
 }
 
-const getMaleBloodPressure = (systolicPressure, diastolicPressure) => {
-  if ( systolicPressure <129 && diastolicPressure <84) return 0;
-  if ( systolicPressure <139 && diastolicPressure <89) return 1;
-  if ( systolicPressure <159 && diastolicPressure <99) return 2;
-  if ( systolicPressure >160 && diastolicPressure >100) return 3;
+getMaleBloodPressure = (systolicPressure, diastolicPressure) => {
+  if ( systolicPressure <=129) {
+    if(diastolicPressure <=84) return 0;
+    if(diastolicPressure <=89) return 1;
+    if(diastolicPressure <=99) return 2;
+    return 3;
+  } 
+  if ( systolicPressure <=139) {
+    if(diastolicPressure <=89) return 1;
+    if(diastolicPressure <=99) return 2;
+    return 3;
+  } 
+  if ( systolicPressure <=159) {
+    if(diastolicPressure <=99) return 2;
+    return 3;
+  } 
+  return 3;
 }
 
-const getFemaleBloodPressure = (systolicPressure, diastolicPressure) => {
-  if ( systolicPressure <120 && diastolicPressure <80) return -3;
-  if ( systolicPressure <139 && diastolicPressure <89) return 0;
-  if ( systolicPressure <159 && diastolicPressure <99) return 2;
-  if ( systolicPressure >160 && diastolicPressure >100) return 3;
+getFemaleBloodPressure = (systolicPressure, diastolicPressure) => {
+  if ( systolicPressure <=120) {
+    if(diastolicPressure <=80) return -3;
+    if(diastolicPressure <=89) return 0;
+    if(diastolicPressure <=99) return 2;
+    return 3;
+  } 
+  if ( systolicPressure <=139) {
+    if(diastolicPressure <=89) return 0;
+    if(diastolicPressure <=99) return 2;
+    return 3;
+  } 
+  if ( systolicPressure <=159) {
+    if(diastolicPressure <=99) return 2;
+    return 3;
+  } 
+  return 3;
 }
 
-const getPercentage = (points, sex) => {
-  if(sex) return riskIndex.riskPercentage[points+2].male;
-  return riskIndex.riskPercentage[points+2].female;
+ getPercentage = (points, sex) => {
+  if(sex) return riskIndex[points+2].male;
+  return riskIndex[points+2].female;
 }
 
 router.post(
@@ -109,8 +133,9 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     Profile.findById(req.body.patientId).then(patient => {
-      const icm = req.body.wheight / (req.body.height * req.body.height);
-      const cr = calculateRisk(patient, systolicPressure, diastolicPressure);
+      const icm = req.body.wheight / (patient.height * patient.height);
+      const cr = calculateRisk(patient, req.body.systolicPressure, req.body.diastolicPressure);
+
       const newAppointment = new Appointment({
         patient: req.body.patientId,
         doctor: req.user.id,
@@ -120,7 +145,8 @@ router.post(
         icm,
         cr,
       });
-      newAppointment.save().then((appointment) => res.status(200).json(appointment)).catch(err =>
+      newAppointment.save().then((appointment) =>{
+         res.status(200).json(appointment)}).catch(err =>
         res.status(404).json({ message: "An error ocurred when tried to save appointment" })
       );
     }).catch(err => res.status(404).json({ message: "An error ocurred when tried to find the patient" }));
