@@ -16,7 +16,13 @@ const AppointmentSchema = new Schema({
     required: true,
   },
   wheight: {
-    type: String,
+    type: Number,
+  },
+  cr: {
+    type: Number,
+  },
+  icm: {
+    type: Number,
   },
   diastolicPressure: {
     type: Number,
