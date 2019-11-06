@@ -35,11 +35,11 @@ const ProfileSchema = new Schema({
     type: Boolean,
     default: false,
   },
-  hearthDisease: {
+  bronchitis: {
     type: Boolean,
     default: false,
   },
-  hearthFailure: {
+  hearthDisease: {
     type: Boolean,
     default: false,
   },
@@ -55,6 +55,10 @@ const ProfileSchema = new Schema({
       type: Boolean,
       default: false,
   },
+  pregnancy: {
+    type: Boolean,
+      default: false,
+  },
   hyperthyroidism: {
     type: Boolean,
     default: false,
@@ -63,11 +67,11 @@ const ProfileSchema = new Schema({
     type: Boolean,
     default: false,
   },
-  pregnacy: {
+  venousInsufficiency: {
     type: Boolean,
     default: false,
   },
-  venousInsufficiency: {
+  cardioInsufficiency: {
     type: Boolean,
     default: false,
   },

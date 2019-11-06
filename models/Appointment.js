@@ -18,11 +18,23 @@ const AppointmentSchema = new Schema({
   wheight: {
     type: Number,
   },
+  medicines: [
+    {
+      medicine: {
+        type: Schema.Types.ObjectId,
+        ref: 'medicine',
+      },
+    }
+  ],
   cr: {
     type: Number,
   },
   icm: {
     type: Number,
+  },
+  hipertension: {
+    type: String,
+    default: "Normal",
   },
   diastolicPressure: {
     type: Number,

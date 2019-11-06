@@ -10,6 +10,7 @@ const users = require("./routes/api/users");
 const patients = require("./routes/api/patients");
 const profile = require("./routes/api/profile");
 const appointment = require("./routes/api/appointment");
+const medicines = require("./routes/api/medicines");
 
 //Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -47,5 +48,6 @@ app.use("/api/users", users);
 app.use("/api/patients", patients);
 app.use("/api/profile", profile);
 app.use("/api/appointment", appointment);
+app.use("/api/medicines", medicines);
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
