@@ -191,7 +191,7 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     Profile.findById(req.body.patientId).then(patient => {
-      const icm = req.body.wheight / (patient.height * patient.height);
+      const icm = req.body.wheight / (patient.height/100 * patient.height/100);
       const cr = calculateRisk(patient, req.body.systolicPressure, req.body.diastolicPressure);
       const hipertension = getHipertensionLevel(req.body.systolicPressure, req.body.diastolicPressure, patient.birthday);
       Medicine.find().then(meds => {
