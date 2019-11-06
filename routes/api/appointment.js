@@ -16,8 +16,6 @@ getAgeRisk = (patient) => {
   const birthDate = new Date(patient.birthday);
   const today = new Date();
   const age = today.getFullYear() - birthDate.getFullYear();
-  console.log(age)
-
   if (patient.sex) {
     if (age <= 34) return -1;
     if (age >= 35 && age <= 39) return 0;
@@ -137,8 +135,16 @@ getHipertensionLevel = (s, d, birthday) => {
   const birthDate = new Date(birthday);
   const today = new Date();
   const age = today.getFullYear() - birthDate.getFullYear();
-  if (s >= 160 || d >= 100) return 'Etapa 2';
-  if ((s > 140 && s < 160 && age < 60) || ( s > 150 && s < 160 && age >= 60) || (d < 100)) return 'Etapa 1';
+  if (s >= 160 || d >= 100) {
+    return 'Etapa 2';
+  }
+  if (
+    (s > 140 && s < 160 && age < 60)
+    || 
+    (s > 150 && s < 160 && age >= 60) 
+    || (d > 100)) {
+    return 'Etapa 1';
+  }
   return 'Normal'
 }
 
@@ -190,7 +196,6 @@ router.post(
       const hipertension = getHipertensionLevel(req.body.systolicPressure, req.body.diastolicPressure, patient.birthday);
       Medicine.find().then(meds => {
         const medicines = hipertension == 'Normal' ? [] : getMedicines(meds, patient, hipertension);
-        console.log(medicines);
         const newAppointment = new Appointment({
           patient: req.body.patientId,
           doctor: req.user.id,
