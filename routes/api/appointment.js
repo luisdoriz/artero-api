@@ -142,7 +142,7 @@ getHipertensionLevel = (s, d, birthday) => {
     (s > 140 && s < 160 && age < 60)
     || 
     (s > 150 && s < 160 && age >= 60) 
-    || (d > 100)) {
+    || (d < 100 && d > 89)) {
     return 'Etapa 1';
   }
   return 'Normal'
