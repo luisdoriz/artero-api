@@ -137,8 +137,8 @@ getHipertensionLevel = (s, d, birthday) => {
   const birthDate = new Date(birthday);
   const today = new Date();
   const age = today.getFullYear() - birthDate.getFullYear();
-  if ((s < 140 && age < 60) || (s < 160 && age > 60) || (d < 100)) return 'Etapa 1';
   if (s >= 160 || d >= 100) return 'Etapa 2';
+  if ((s > 140 && s < 160 && age < 60) || ( s > 150 && s < 160 && age >= 60) || (d < 100)) return 'Etapa 1';
   return 'Normal'
 }
 
