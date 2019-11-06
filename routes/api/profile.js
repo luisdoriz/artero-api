@@ -16,6 +16,21 @@ router.post(
       height: req.body.height,
       weight: req.body.weight,
       sex: req.body.sex,
+      bronchitis: req.body.bronchitis,
+      hearthDisease: req.body.hearthDisease,
+      renalDisease: req.body.renalDisease,
+      prostaticHyperplasia: req.body.prostaticHyperplasia,
+      pregnancy: req.body.pregnancy,
+      hyperthyroidism: req.body.hyperthyroidism,
+      cough: req.body.cough,
+      venousInsufficiency: req.body.venousInsufficiency,
+      cardioInsufficiency: req.body.cardioInsufficiency,
+      migraine: req.body.migraine,
+      goutDisease: req.body.goutDisease,
+      anxiety: req.body.anxiety,
+      cocaineAddiction: req.body.cocaineAddiction,
+      depression: req.body.depression,
+      diabetes: req.body.diabetes,
     });
     newProfile
       .save()
@@ -86,7 +101,7 @@ router.get(
   "/patient/:id",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    Profile.findOne({user: req.user.id}).then(doctorProfile => {
+    Profile.findOne({ user: req.user.id }).then(doctorProfile => {
       if (
         doctorProfile.patients.filter(
           patient => patient.user === req.params.id
@@ -95,9 +110,10 @@ router.get(
         res.status(200).json({
           response: {
             message: "You don't have this patient",
-          }});
+          }
+        });
       } else {
-        Profile.findById(req.params.id).then( patientProfile => {
+        Profile.findById(req.params.id).then(patientProfile => {
           res.status(200).json(patientProfile);
         }).catch(err => res.status(404).json({ error: 'There is no profile for this user.' }));
       }
