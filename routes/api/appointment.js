@@ -16,26 +16,28 @@ getAgeRisk = (patient) => {
   const birthDate = new Date(patient.birthday);
   const today = new Date();
   const age = today.getFullYear() - birthDate.getFullYear();
+  console.log(age)
+
   if (patient.sex) {
-    if (age < 34) return -1;
-    if (age > 35 && age < 39) return 0;
-    if (age > 40 && age < 44) return 1;
-    if (age > 45 && age < 49) return 2;
-    if (age > 50 && age < 54) return 3;
-    if (age > 55 && age < 59) return 4;
-    if (age > 60 && age < 64) return 5;
-    if (age > 65 && age < 69) return 6;
-    if (age > 70 && age < 74) return 7;
+    if (age <= 34) return -1;
+    if (age >= 35 && age <= 39) return 0;
+    if (age >= 40 && age <= 44) return 1;
+    if (age >= 45 && age <= 49) return 2;
+    if (age >= 50 && age <= 54) return 3;
+    if (age >= 55 && age <= 59) return 4;
+    if (age >= 60 && age <= 64) return 5;
+    if (age >= 65 && age <= 69) return 6;
+    if (age >= 70 && age <= 74) return 7;
   } else {
-    if (age < 34) return -9;
-    if (age > 35 && age < 39) return -4;
-    if (age > 40 && age < 44) return 0;
-    if (age > 45 && age < 49) return 3;
-    if (age > 50 && age < 54) return 6;
-    if (age > 55 && age < 59) return 7;
-    if (age > 60 && age < 64) return 8;
-    if (age > 65 && age < 69) return 8;
-    if (age > 70 && age < 74) return 8;
+    if (age <= 34) return -9;
+    if (age >= 35 && age <= 39) return -4;
+    if (age >= 40 && age <= 44) return 0;
+    if (age >= 45 && age <= 49) return 3;
+    if (age >= 50 && age <= 54) return 6;
+    if (age >= 55 && age <= 59) return 7;
+    if (age >= 60 && age <= 64) return 8;
+    if (age >= 65 && age <= 69) return 8;
+    if (age >= 70 && age <= 74) return 8;
   }
 }
 
@@ -59,6 +61,7 @@ getCholesterolRisk = (cholesterol, sex) => {
     return 1;
   };
   if (cholesterol > 280) return 3;
+  return 0;
 }
 
 getHdlCholesterolRisk = (cholesterol, sex) => {
@@ -79,6 +82,7 @@ getHdlCholesterolRisk = (cholesterol, sex) => {
     if (sex) return -2;
     return -3;
   };
+  return 0;
 }
 
 getBloodPressure = (sex, systolicPressure, diastolicPressure) => {
@@ -133,9 +137,9 @@ getHipertensionLevel = (s, d, birthday) => {
   const birthDate = new Date(birthday);
   const today = new Date();
   const age = today.getFullYear() - birthDate.getFullYear();
-  if (s < 120 && d < 80) return 'Normal'
   if ((s < 140 && age < 60) || (s < 160 && age > 60) || (d < 100)) return 'Etapa 1';
   if (s >= 160 || d >= 100) return 'Etapa 2';
+  return 'Normal'
 }
 
 findMed = (name, medicines) => (
@@ -143,38 +147,38 @@ findMed = (name, medicines) => (
     return med.name == name;
   }))
 
-getMedicines = (patient, hipertension) => {
+getMedicines = (medicines, patient, hipertension) => {
   let medicinesResult = [];
-  Medicine.find().then(medicines => {
-    if (hipertension == 'Etapa 2') {
-      if ((patient.hearthDisease || patient.migraine || patient.anxiety) && !patient.depression && !patient.cocaineAddiction && !patient.venousInsufficiency && !patient.cough && !patient.bronchitis) medicinesResult.push(findMed('Beta Bloqueador', medicines));
-      if (patient.cardioInsufficiency && !patient.prostaticHyperplasia && !patient.goutDisease) medicinesResult.push(findMed('Diuretico Tiazidico', medicines));
-      if (
-        patient.cardioInsufficiency &&
-        patient.diabetes &&
-        patient.renalDisease &&
-        patient.venousInsufficiency &&
-        patient.goutDisease &&
-        patient.depression
-      ) medicinesResult.push(findMed('IECA', medicines));
-      if (patient.renalDisease && !patient.prostaticHyperplasia) medicinesResult.push(findMed('Diruetico ASA', medicines));
-      if (patient.prostaticHyperplasia && patient.diabetes) medicinesResult.push(findMed('Alfa Bloqueador', medicines));
-      if (patient.pregnancy) {
-        medicinesResult.push(findMed('Metildopa', medicines));
-        medicinesResult.push(findMed('Labetolol', medicines));
-      }
-      if (patient.cocaineAddiction) medicinesResult.push(findMed('Nitroglicerina', medicines));
-      if (patient.cough || patient.bronchitis || patient.venousInsufficiency || patient.goutDisease || patient.depression || med.length == 0) medicinesResult.push(findMed('ARA II', medicines));
-    } else {
-      if (patient.cardioInsufficiency) medicinesResult.push(findMed('Diuretico Tiazidico', medicines));
-      if (patient.diabetes = 2 || patient.renalDisease) medicinesResult.push(findMed('IECA', medicines));
-      if (patient.pregnancy) medicinesResult.push(findMed('Labetolol', medicines));
 
-      if (patient.goutDisease || patient.depression || med.length == 0) medicinesResult.push(findMed('ARA II', medicines));
+  if (hipertension == 'Etapa 2') {
+    if ((patient.hearthDisease || patient.migraine || patient.anxiety) && !patient.depression && !patient.cocaineAddiction && !patient.venousInsufficiency && !patient.cough && !patient.bronchitis)
+      medicinesResult.push(findMed('Beta Bloqueador', medicines));
+    if (patient.cardioInsufficiency && !patient.prostaticHyperplasia && !patient.goutDisease) medicinesResult.push(findMed('Diuretico Tiazidico', medicines));
+    if (
+      patient.cardioInsufficiency &&
+      patient.diabetes &&
+      patient.renalDisease &&
+      patient.venousInsufficiency &&
+      patient.goutDisease &&
+      patient.depression
+    ) medicinesResult.push(findMed('IECA', medicines));
+    if (patient.renalDisease && !patient.prostaticHyperplasia) medicinesResult.push(findMed('Diruetico ASA', medicines));
+    if (patient.prostaticHyperplasia && patient.diabetes) medicinesResult.push(findMed('Alfa Bloqueador', medicines));
+    if (patient.pregnancy) {
+      medicinesResult.push(findMed('Metildopa', medicines));
+      medicinesResult.push(findMed('Labetolol', medicines));
     }
-    rtn = medicinesResult.map(med => med._id);
-    return medicinesResult;
-  });
+    if (patient.cocaineAddiction) medicinesResult.push(findMed('Nitroglicerina', medicines));
+    if (patient.cough || patient.bronchitis || patient.venousInsufficiency || patient.goutDisease || patient.depression || med.length == 0) medicinesResult.push(findMed('ARA II', medicines));
+  } else {
+    if (patient.cardioInsufficiency) medicinesResult.push(findMed('Diuretico Tiazidico', medicines));
+    if (patient.diabetes == 2 || patient.renalDisease) medicinesResult.push(findMed('IECA', medicines));
+    if (patient.pregnancy) medicinesResult.push(findMed('Labetolol', medicines));
+
+    if (patient.goutDisease || patient.depression || medicinesResult.length == 0) medicinesResult.push(findMed('ARA II', medicines));
+  }
+  rtn = medicinesResult.map(med => ({ medicine: med._id }));
+  return rtn;
 }
 router.post(
   "/",
@@ -184,24 +188,27 @@ router.post(
       const icm = req.body.wheight / (patient.height * patient.height);
       const cr = calculateRisk(patient, req.body.systolicPressure, req.body.diastolicPressure);
       const hipertension = getHipertensionLevel(req.body.systolicPressure, req.body.diastolicPressure, patient.birthday);
-      const medicines = hipertension == 'Normal' ? [] : getMedicines(patient);
-
-      const newAppointment = new Appointment({
-        patient: req.body.patientId,
-        doctor: req.user.id,
-        systolicPressure: req.body.systolicPressure,
-        diastolicPressure: req.body.diastolicPressure,
-        wheight: req.body.wheight,
-        medicines,
-        icm,
-        cr,
-        hipertension
+      Medicine.find().then(meds => {
+        const medicines = hipertension == 'Normal' ? [] : getMedicines(meds, patient, hipertension);
+        console.log(medicines);
+        const newAppointment = new Appointment({
+          patient: req.body.patientId,
+          doctor: req.user.id,
+          systolicPressure: req.body.systolicPressure,
+          diastolicPressure: req.body.diastolicPressure,
+          wheight: req.body.wheight,
+          medicines,
+          icm,
+          cr,
+          hipertension
+        });
+        newAppointment.save().then((appointment) => {
+          res.status(200).json(appointment)
+        }).catch(err =>
+          res.status(404).json({ message: "An error ocurred when tried to save appointment" })
+        );
       });
-      newAppointment.save().then((appointment) => {
-        res.status(200).json(appointment)
-      }).catch(err =>
-        res.status(404).json({ message: "An error ocurred when tried to save appointment" })
-      );
+
     }).catch(err => res.status(404).json({ message: "An error ocurred when tried to find the patient" }));
   }
 );
@@ -210,7 +217,7 @@ router.get(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    Appointment.find({ patient: req.params.id }).then((appointments) => res.status(200).json(appointments)).catch(err =>
+    Appointment.find({ patient: req.params.id }).populate('medicines.medicine', ['name']).then((appointments) => res.status(200).json(appointments)).catch(err =>
       res.status(404).json({ message: "No appointments" })
     );
   }
