@@ -101,16 +101,17 @@ router.get(
   "/search/:search",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    Profiles.findById({ user: req.user.id }).populate('patients.patient', ['handleName, email']).then(profile => {
-      if (profile.patients.length() === 0) {
+    Profile.findOne({ user: req.user.id }).populate('patients.patient', ['handleName', 'email']).then(profile => {
+      if (profile.patients.length === 0) {
         res.status(404).json({ error: 'There is no patients for this user.' });
       }
       const patients = profile.patients.filter(patient => {
+
         if (
-          patient.email.includes(req.params.search)
+          patient.patient.email.includes(req.params.search)
           ||
-          patient.handleName.toLowerCase().includes(req.params.search.toLowerCase())
-        ) return patient;
+          patient.patient.handleName.toLowerCase().includes(req.params.search.toLowerCase())
+        ) return patient.patient;
       })
       res.status(200).json(patients);
     })
