@@ -154,11 +154,11 @@ getMedicines = (medicines, patient, hipertension) => {
       medicinesResult.push(findMed('Beta Bloqueador', medicines));
     if (patient.cardioInsufficiency && !patient.prostaticHyperplasia && !patient.goutDisease) medicinesResult.push(findMed('Diuretico Tiazidico', medicines));
     if (
-      patient.cardioInsufficiency &&
-      patient.diabetes &&
-      patient.renalDisease &&
-      patient.venousInsufficiency &&
-      patient.goutDisease &&
+      patient.cardioInsufficiency ||
+      patient.diabetes ||
+      patient.renalDisease ||
+      patient.venousInsufficiency ||
+      patient.goutDisease ||
       patient.depression
     ) medicinesResult.push(findMed('IECA', medicines));
     if (patient.renalDisease && !patient.prostaticHyperplasia) medicinesResult.push(findMed('Diruetico ASA', medicines));
