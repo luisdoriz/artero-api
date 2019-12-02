@@ -135,8 +135,8 @@ getHipertensionLevel = (s, d, birthday) => {
   const birthDate = new Date(birthday);
   const today = new Date();
   const age = today.getFullYear() - birthDate.getFullYear();
-  if((s<140 && age<60) || (s<150 && age>60) && d < 80) return 'Normal';
-  if(s<160 || (d<100)) return 'Etapa 1';
+  if ((s < 140 && age < 60) || (s < 150 && age > 60) && d < 80) return 'Normal';
+  if (s < 160 || (d < 100)) return 'Etapa 1';
   return 'Etapa 2';
 
 }
@@ -184,7 +184,7 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     Profile.findById(req.body.patientId).then(patient => {
-      const icm = req.body.wheight / (patient.height/100 * patient.height/100);
+      const icm = req.body.wheight / (patient.height / 100 * patient.height / 100);
       const cr = calculateRisk(patient, req.body.systolicPressure, req.body.diastolicPressure);
       const hipertension = getHipertensionLevel(req.body.systolicPressure, req.body.diastolicPressure, patient.birthday);
       Medicine.find().then(meds => {
@@ -201,7 +201,7 @@ router.post(
           hipertension
         });
         newAppointment.save().then((appointment) => {
-          res.status(200).json(appointment)
+          res.status(200).json({ appointment, medicines })
         }).catch(err =>
           res.status(404).json({ message: "An error ocurred when tried to save appointment" })
         );
