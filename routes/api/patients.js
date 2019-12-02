@@ -97,6 +97,16 @@ router.get(
   }
 );
 
+router.put(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Profile.findByIdAndUpdate({ _id: req.params.id }, { $set: req.body }).then(patient => {
+      res.status(200).json(patient);
+    }).catch(err => res.status(404).json({ error: 'There is no patients for this user.' }));
+  }
+);
+
 router.get(
   "/search/:search",
   passport.authenticate("jwt", { session: false }),
