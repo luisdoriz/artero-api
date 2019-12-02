@@ -221,4 +221,14 @@ router.get(
   }
 );
 
+router.get(
+  "/one/:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Appointment.findById(req.params.id).populate('medicines.medicine', ['name']).then((appointment) => res.status(200).json(appointment)).catch(err =>
+      res.status(404).json({ message: "No appointment" })
+    );
+  }
+);
+
 module.exports = router;

@@ -35,6 +35,8 @@ router.post(
     newProfile
       .save()
       .then(patientProfile => {
+        console.log(patientProfile);
+
         Profile.findOne({ user: req.user.id }).populate('patients.patient', ['handleName']).then(doctorProfile => {
           if (
             doctorProfile.patients.filter(
@@ -60,7 +62,7 @@ router.post(
         });
       })
       .catch(err =>
-        res.status(200).json({ message: "An error ocurred when tried to save profile" })
+        res.status(400).json({ message: "An error ocurred when tried to save profile", err })
       );
   }
 );
